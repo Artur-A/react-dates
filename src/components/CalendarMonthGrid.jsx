@@ -4,6 +4,7 @@ import shallowCompare from 'react-addons-shallow-compare';
 import momentPropTypes from 'react-moment-proptypes';
 import moment from 'moment';
 import cx from 'classnames';
+import { addEventListener, removeEventListener } from 'consolidated-events';
 
 import CalendarMonth from './CalendarMonth';
 
@@ -81,7 +82,11 @@ export default class CalendarMonthGrid extends React.Component {
 
   componentDidMount() {
     this.container = ReactDOM.findDOMNode(this.containerRef);
-    this.container.addEventListener('transitionend', this.onTransitionEnd);
+    this.eventHandle = addEventListener(
+      this.container,
+      'transitionend',
+      this.onTransitionEnd,
+    );
   }
 
   componentWillReceiveProps(nextProps) {
@@ -126,7 +131,7 @@ export default class CalendarMonthGrid extends React.Component {
   }
 
   componentWillUnmount() {
-    this.container.removeEventListener('transitionend', this.onTransitionEnd);
+    removeEventListener(this.eventHandle);
   }
 
   onTransitionEnd() {
